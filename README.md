@@ -13,3 +13,7 @@ Endpoints:
     PUT    /api/students/{id}       -> cập nhật sinh viên           (cần Bearer token)
     DELETE /api/students/{id}       -> xóa sinh viên (204)          (cần Bearer token)
     GET    /actuator/health         -> health check (public, dùng cho CI/CD)
+
+Open your browser:
+    http://127.0.0.1:8000
+    http://127.0.0.1:8000/docs
