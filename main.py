@@ -5,7 +5,7 @@ from typing import Optional
 import jwt
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 # --------------------------------------------------------------------------
 # Config (demo only)
@@ -41,9 +41,9 @@ class LoginResponse(BaseModel):
 
 class StudentIn(BaseModel):
     name: str = Field(..., min_length=1)
-    email: str = Field(..., min_length=3)
+    email: EmailStr
     major: Optional[str] = None
-    gpa: Optional[float] = None
+    gpa: Optional[float] = Field(None, ge=0.0, le=10.0)
 
 
 class Student(StudentIn):
