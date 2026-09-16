@@ -131,6 +131,13 @@ def get_student(student_id: int, _: str = Depends(verify_token)):
 @app.post("/api/students", response_model=Student, status_code=status.HTTP_201_CREATED)
 def create_student(payload: StudentIn, _: str = Depends(verify_token)):
     global next_id
+
+    if email_exists(payload.email):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists"
+        )
+
     student = Student(id=next_id, **payload.dict())
     students_db[next_id] = student
     next_id += 1
