@@ -140,8 +140,18 @@ def create_student(payload: StudentIn, _: str = Depends(verify_token)):
 @app.put("/api/students/{student_id}", response_model=Student)
 def update_student(student_id: int, payload: StudentIn, _: str = Depends(verify_token)):
     if student_id not in students_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Student not found with id {student_id}")
-    updated = Student(id=student_id, **payload.dict())
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Student not found with id {student_id}"
+        )
+
+    if email_exists(str(payload.email), exclude_id=student_id):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists"
+        )
+
+    updated = Student(id=student_id, **payload.model_dump())
     students_db[student_id] = updated
     return updated
 
