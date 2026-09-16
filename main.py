@@ -51,7 +51,7 @@ class Student(StudentIn):
 
 
 # --------------------------------------------------------------------------
-# "Database" giả lập trong bộ nhớ (giống H2 in-memory bên bản Spring Boot)
+# "Database" Simulate DB
 # --------------------------------------------------------------------------
 students_db: dict[int, Student] = {}
 next_id = 1
@@ -149,7 +149,7 @@ def delete_student(student_id: int, _: str = Depends(verify_token)):
 
 
 # --------------------------------------------------------------------------
-# Health check (public - dùng để CI/CD kiểm tra app đã sẵn sàng trước khi chạy Newman)
+# Health check
 # --------------------------------------------------------------------------
 @app.get("/actuator/health")
 def health():
