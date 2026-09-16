@@ -105,6 +105,12 @@ def login(payload: LoginRequest):
         return LoginResponse(token=token, username=payload.username)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
+def email_exists(email: str, exclude_id: Optional[int] = None) -> bool:
+    for student in students_db.values():
+        if student.email.lower() == email.lower():
+            if exclude_id is None or student.id != exclude_id:
+                return True
+    return False
 
 # --------------------------------------------------------------------------
 # Student CRUD endpoints
