@@ -8,7 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from pydantic import BaseModel, Field
 
 # --------------------------------------------------------------------------
-# Config (demo only - KHONG dung secret hardcode nay trong production)
+# Config (demo only)
 # --------------------------------------------------------------------------
 JWT_SECRET = "SOA-Topic11-2-Demo-Secret-Key-For-Postman-Newman-CI-CD-2026"
 JWT_ALGORITHM = "HS256"
