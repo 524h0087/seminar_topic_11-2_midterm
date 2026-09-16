@@ -12,7 +12,7 @@ from pydantic import BaseModel, EmailStr, Field
 # --------------------------------------------------------------------------
 JWT_SECRET = "SOA-Topic11-2-Demo-Secret-Key-For-Postman-Newman-CI-CD-2026"
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRE_MINUTES = 60
+JWT_EXP = 45 # Min
 
 DEMO_USERNAME = "admin"
 DEMO_PASSWORD = "admin123"
@@ -79,7 +79,7 @@ def create_token(username: str) -> str:
     payload = {
         "sub": username,
         "iat": now,
-        "exp": now + timedelta(minutes=JWT_EXPIRE_MINUTES),
+        "exp": now + timedelta(minutes=JWT_EXP),
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
