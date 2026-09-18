@@ -5,7 +5,7 @@ from typing import Optional
 import jwt
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 # --------------------------------------------------------------------------
 # Config (demo only)
@@ -44,6 +44,20 @@ class StudentIn(BaseModel):
     email: EmailStr
     major: Optional[str] = None
     gpa: Optional[float] = Field(None, ge=0.0, le=10.0)
+
+    @field_validator("name", "email", "major", mode="before")
+    @classmethod
+    def reject_blank_strings(cls, value):
+        if value is None:
+            return value
+
+        if isinstance(value, str):
+            value = value.strip()
+            if not value:
+                raise ValueError("Field must not be blank")
+            return value
+
+        return value
 
 
 class Student(StudentIn):
