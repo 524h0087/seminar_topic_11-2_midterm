@@ -79,7 +79,7 @@ def seed_data():
         StudentIn(name="Le Van C", email="vanc@student.edu.vn", major="Information Systems", gpa=7.8),
     ]
     for s in seed:
-        students_db[next_id] = Student(id=next_id, **s.dict())
+        students_db[next_id] = Student(id=next_id, **s.model_dump())
         next_id += 1
 
 
