@@ -1,0 +1,8 @@
+workspace:
+  id: 45731556-2899-4fbb-8455-562d59511b21
+localResources:
+  specs:
+    - ../postman/specs/API Testing/API Testing.json
+resourceNameMappings:
+  specs:
+    - ../postman/specs/API Testing/API Testing.json: API Testing

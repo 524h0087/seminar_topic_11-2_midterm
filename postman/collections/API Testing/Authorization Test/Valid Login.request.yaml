@@ -1,0 +1,70 @@
+$kind: http-request
+url: "{{baseUrl}}/api/auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\": \"admin\",\r
+
+    \    \"password\": \"admin123\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Login returns 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Token exists\", function () {\r
+
+      \    pm.expect(json.token).to.exist;\r
+
+      \    pm.expect(json.token).to.be.a(\"string\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Token type is Bearer\", function () {\r
+
+      \    pm.expect(json.tokenType).to.eql(\"Bearer\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Username is admin\", function () {\r
+
+      \    pm.expect(json.username).to.eql(\"admin\");\r
+
+      });\r
+
+      \r
+
+      // Save JWT for subsequent requests\r
+
+      pm.environment.set(\"token\", json.token); \r
+
+      pm.environment.set(\"tokenType\", json.tokenType); \r
+
+      pm.environment.set(\"username\", json.username);"
+    language: text/javascript
+  - type: beforeRequest
+    code: "// Clean up previous login data\r
+
+      pm.environment.unset(\"token\");\r
+
+      pm.environment.unset(\"tokenType\");\r
+
+      pm.environment.unset(\"username\");"
+    language: text/javascript
+order: 2510562395463604

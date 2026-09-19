@@ -1,0 +1,12 @@
+name: Test Subject 1
+values:
+  - key: baseUrl
+    value: ''
+  - key: studentId
+    value: ''
+  - key: token
+    value: ''
+  - key: tokenType
+    value: ''
+  - key: username
+    value: ''

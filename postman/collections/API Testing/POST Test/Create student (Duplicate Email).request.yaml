@@ -1,0 +1,37 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Yeerin\",\r
+
+    \    \"email\": \"yoosin@gmail.com\",\r
+
+    \    \"major\": \"Accounting\",\r
+
+    \    \"gpa\": 7.5\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Duplicate email returns 409\", function () {\r
+
+      \    pm.response.to.have.status(409);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Correct duplicate email message\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(json.detail).to.eql(\"Email already exists\");\r
+
+      });"
+    language: text/javascript
+order: 2499284787195157

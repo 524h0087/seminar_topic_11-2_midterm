@@ -1,0 +1,37 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Invalid GPA Student\",\r
+
+    \    \"email\": \"gpa@example.com\",\r
+
+    \    \"major\": \"Computer Science\",\r
+
+    \    \"gpa\": 11\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"GPA above 10 returns 422\", function () {\r
+
+      \    pm.response.to.have.status(422);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Validation error exists\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(json.detail).to.exist;\r
+
+      });"
+    language: text/javascript
+order: 3924899596450292

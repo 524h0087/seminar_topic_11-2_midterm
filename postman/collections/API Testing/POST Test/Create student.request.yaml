@@ -1,0 +1,75 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Yoosin\",\r
+
+    \    \"email\": \"yoosin@gmail.com\",\r
+
+    \    \"major\": \"Journalist\",\r
+
+    \    \"gpa\": 8.5\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Student is created\", function () {\r
+
+      \    pm.response.to.have.status(201);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Student ID exists\", function () {\r
+
+      \    pm.expect(json.id).to.exist;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Name is correct\", function () {\r
+
+      \    pm.expect(json.name).to.eql(\"Yoosin\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Email is correct\", function () {\r
+
+      \    pm.expect(json.email).to.eql(\"yoosin@gmail.com\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Major is correct\", function () {\r
+
+      \    pm.expect(json.major).to.eql(\"Journalist\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"GPA is correct\", function () {\r
+
+      \    pm.expect(json.gpa).to.eql(8.5);\r
+
+      });\r
+
+      \r
+
+      // Save the new ID for PUT/DELETE tests\r
+
+      pm.environment.set(\"studentId\", json.id);"
+    language: text/javascript
+order: 1789786905677

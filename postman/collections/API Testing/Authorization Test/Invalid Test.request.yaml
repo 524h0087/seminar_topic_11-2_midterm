@@ -1,0 +1,70 @@
+$kind: http-request
+url: "{{baseUrl}}/api/auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"username\": \"admin\",\r
+
+    \    \"password\": \"demin321\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Invalid login returns 401\", function () {\r
+
+      \    pm.response.to.have.status(401);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Error message is correct\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(json.detail).to.eql(\r
+
+      \        \"Invalid username or password\"\r
+
+      \    );\r
+
+      \r
+
+      \    pm.test(\"Token is not created\", function () {\r
+
+      \        pm.expect(pm.environment.get(\"token\")).to.be.undefined;\r
+
+      \    });\r
+
+      \r
+
+      \    pm.test(\"Token type is not created\", function () {\r
+
+      \        pm.expect(pm.environment.get(\"tokenType\")).to.be.undefined;\r
+
+      \    });\r
+
+      \r
+
+      \    pm.test(\"Username is not created\", function () {\r
+
+      \        pm.expect(pm.environment.get(\"username\")).to.be.undefined;\r
+
+      \    });\r
+
+      });"
+    language: text/javascript
+  - type: beforeRequest
+    code: "// Clean up previous login data\r
+
+      pm.environment.unset(\"token\");\r
+
+      pm.environment.unset(\"tokenType\");\r
+
+      pm.environment.unset(\"username\");"
+    language: text/javascript
+order: 146277565790
