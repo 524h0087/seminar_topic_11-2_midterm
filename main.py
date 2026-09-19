@@ -164,7 +164,7 @@ def create_student(payload: StudentIn, _: str = Depends(verify_token)):
             detail="Email already exists"
         )
 
-    student = Student(id=next_id, **payload.dict())
+    student = Student(id=next_id, **payload.model_dump())
     students_db[next_id] = student
     next_id += 1
     return student
