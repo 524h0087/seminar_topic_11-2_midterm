@@ -27,6 +27,16 @@ app = FastAPI(
 
 security = HTTPBearer()
 
+# Return a clean 422 response instead of FastAPI's default validation details.
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+    message = errors[0].get("msg", "Validation error") if errors else "Validation error"
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": message},
+    )
+
 # --------------------------------------------------------------------------
 # Models
 # --------------------------------------------------------------------------
