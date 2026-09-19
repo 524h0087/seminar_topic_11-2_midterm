@@ -1,21 +1,3 @@
-"""
-Student Management API - FastAPI version
-Topic 11-2: API Testing with Postman & Newman - 504070 SOA (Fall 2026)
-
-Chay:
-    pip install fastapi uvicorn "pyjwt>=2.8" pydantic
-    uvicorn main:app --reload --port 8080
-
-Endpoints:
-    POST   /api/auth/login          -> đăng nhập, trả JWT token (admin / admin123)
-    GET    /api/students            -> lấy danh sách sinh viên      (cần Bearer token)
-    GET    /api/students/{id}       -> lấy 1 sinh viên              (cần Bearer token)
-    POST   /api/students            -> tạo sinh viên (201)          (cần Bearer token)
-    PUT    /api/students/{id}       -> cập nhật sinh viên           (cần Bearer token)
-    DELETE /api/students/{id}       -> xóa sinh viên (204)          (cần Bearer token)
-    GET    /actuator/health         -> health check (public, dùng cho CI/CD)
-"""
-
 import time
 from datetime import datetime, timedelta, timezone
 from typing import Optional
@@ -23,14 +5,14 @@ from typing import Optional
 import jwt
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 # --------------------------------------------------------------------------
-# Config (demo only - KHONG dung secret hardcode nay trong production)
+# Config (demo only)
 # --------------------------------------------------------------------------
 JWT_SECRET = "SOA-Topic11-2-Demo-Secret-Key-For-Postman-Newman-CI-CD-2026"
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRE_MINUTES = 60
+JWT_EXP = 45 # Min
 
 DEMO_USERNAME = "admin"
 DEMO_PASSWORD = "admin123"
@@ -59,9 +41,9 @@ class LoginResponse(BaseModel):
 
 class StudentIn(BaseModel):
     name: str = Field(..., min_length=1)
-    email: str = Field(..., min_length=3)
+    email: EmailStr
     major: Optional[str] = None
-    gpa: Optional[float] = None
+    gpa: Optional[float] = Field(None, ge=0.0, le=10.0)
 
 
 class Student(StudentIn):
@@ -69,7 +51,7 @@ class Student(StudentIn):
 
 
 # --------------------------------------------------------------------------
-# "Database" giả lập trong bộ nhớ (giống H2 in-memory bên bản Spring Boot)
+# "Database" Simulate DB
 # --------------------------------------------------------------------------
 students_db: dict[int, Student] = {}
 next_id = 1
@@ -97,7 +79,7 @@ def create_token(username: str) -> str:
     payload = {
         "sub": username,
         "iat": now,
-        "exp": now + timedelta(minutes=JWT_EXPIRE_MINUTES),
+        "exp": now + timedelta(minutes=JWT_EXP),
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
@@ -123,6 +105,12 @@ def login(payload: LoginRequest):
         return LoginResponse(token=token, username=payload.username)
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
+def email_exists(email: str, exclude_id: Optional[int] = None) -> bool:
+    for student in students_db.values():
+        if student.email.lower() == email.lower():
+            if exclude_id is None or student.id != exclude_id:
+                return True
+    return False
 
 # --------------------------------------------------------------------------
 # Student CRUD endpoints
@@ -152,8 +140,18 @@ def create_student(payload: StudentIn, _: str = Depends(verify_token)):
 @app.put("/api/students/{student_id}", response_model=Student)
 def update_student(student_id: int, payload: StudentIn, _: str = Depends(verify_token)):
     if student_id not in students_db:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Student not found with id {student_id}")
-    updated = Student(id=student_id, **payload.dict())
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Student not found with id {student_id}"
+        )
+
+    if email_exists(str(payload.email), exclude_id=student_id):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists"
+        )
+
+    updated = Student(id=student_id, **payload.model_dump())
     students_db[student_id] = updated
     return updated
 
@@ -167,7 +165,7 @@ def delete_student(student_id: int, _: str = Depends(verify_token)):
 
 
 # --------------------------------------------------------------------------
-# Health check (public - dùng để CI/CD kiểm tra app đã sẵn sàng trước khi chạy Newman)
+# Health check
 # --------------------------------------------------------------------------
 @app.get("/actuator/health")
 def health():
