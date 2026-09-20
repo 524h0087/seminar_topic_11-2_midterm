@@ -42,6 +42,12 @@ Build the Python environment:
 powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
 ```
 
+Run the full Build-Test-Deploy pipeline:
+
+```powershell
+npm run pipeline:local
+```
+
 Run the Newman API test suite:
 
 ```powershell
@@ -94,6 +100,26 @@ Password: admin123
 | `GET` | `/actuator/health` | Health check for automation | Public |
 
 ## Automation Commands
+
+### Full Local Pipeline
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\pipeline.ps1
+```
+
+Or:
+
+```powershell
+npm run pipeline:local
+```
+
+The full pipeline:
+
+1. Stops any existing local deployment to free the configured port.
+2. Runs the Build phase.
+3. Runs the Test phase.
+4. Runs the Deploy phase only if Build and Test both pass.
+5. Stops immediately if any phase fails.
 
 ### Build
 
