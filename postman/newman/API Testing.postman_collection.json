@@ -1,0 +1,742 @@
+{
+  "info": {
+    "name": "API Testing",
+    "description": "Generated from the local Postman YAML workspace for Newman automation.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "01 - Health Test",
+      "item": [
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/actuator/health",
+              "host": [
+                "{{baseUrl}}/actuator/health"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"API status is UP\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.status).to.eql(\"UP\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Authorization Test",
+      "item": [
+        {
+          "name": "Invalid Test",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}/api/auth/login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"demin321\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Invalid login returns 401\", function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});",
+                  "",
+                  "pm.test(\"Error message is correct\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.detail).to.eql(",
+                  "        \"Invalid username or password\"",
+                  "    );",
+                  "",
+                  "    pm.test(\"Token is not created\", function () {",
+                  "        pm.expect(pm.environment.get(\"token\")).to.be.undefined;",
+                  "    });",
+                  "",
+                  "    pm.test(\"Token type is not created\", function () {",
+                  "        pm.expect(pm.environment.get(\"tokenType\")).to.be.undefined;",
+                  "    });",
+                  "",
+                  "    pm.test(\"Username is not created\", function () {",
+                  "        pm.expect(pm.environment.get(\"username\")).to.be.undefined;",
+                  "    });",
+                  "});"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Clean up previous login data",
+                  "pm.environment.unset(\"token\");",
+                  "pm.environment.unset(\"tokenType\");",
+                  "pm.environment.unset(\"username\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Valid Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}/api/auth/login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Login returns 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Token exists\", function () {",
+                  "    pm.expect(json.token).to.exist;",
+                  "    pm.expect(json.token).to.be.a(\"string\");",
+                  "});",
+                  "",
+                  "pm.test(\"Token type is Bearer\", function () {",
+                  "    pm.expect(json.tokenType).to.eql(\"Bearer\");",
+                  "});",
+                  "",
+                  "pm.test(\"Username is admin\", function () {",
+                  "    pm.expect(json.username).to.eql(\"admin\");",
+                  "});",
+                  "",
+                  "// Save JWT for subsequent requests",
+                  "pm.environment.set(\"token\", json.token); ",
+                  "pm.environment.set(\"tokenType\", json.tokenType); ",
+                  "pm.environment.set(\"username\", json.username);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Clean up previous login data",
+                  "pm.environment.unset(\"token\");",
+                  "pm.environment.unset(\"tokenType\");",
+                  "pm.environment.unset(\"username\");"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - GET Test",
+      "item": [
+        {
+          "name": "GET all students",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}/api/students"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response is an array\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json).to.be.an(\"array\");",
+                  "});",
+                  "",
+                  "pm.test(\"Students exist\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET student by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/2",
+              "host": [
+                "{{baseUrl}}/api/students/2"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Student has an ID\", function () {",
+                  "    pm.expect(json.id).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Student has a name\", function () {",
+                  "    pm.expect(json.name).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Student has an email\", function () {",
+                  "    pm.expect(json.email).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - POST Test",
+      "item": [
+        {
+          "name": "Create student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}/api/students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Yoosin\",\r\n    \"email\": \"yoosin@gmail.com\",\r\n    \"major\": \"Journalist\",\r\n    \"gpa\": 8.5\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Student is created\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Student ID exists\", function () {",
+                  "    pm.expect(json.id).to.exist;",
+                  "});",
+                  "",
+                  "pm.test(\"Name is correct\", function () {",
+                  "    pm.expect(json.name).to.eql(\"Yoosin\");",
+                  "});",
+                  "",
+                  "pm.test(\"Email is correct\", function () {",
+                  "    pm.expect(json.email).to.eql(\"yoosin@gmail.com\");",
+                  "});",
+                  "",
+                  "pm.test(\"Major is correct\", function () {",
+                  "    pm.expect(json.major).to.eql(\"Journalist\");",
+                  "});",
+                  "",
+                  "pm.test(\"GPA is correct\", function () {",
+                  "    pm.expect(json.gpa).to.eql(8.5);",
+                  "});",
+                  "",
+                  "// Save the new ID for PUT/DELETE tests",
+                  "pm.environment.set(\"studentId\", json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create student (Duplicate Email)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}/api/students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Yeerin\",\r\n    \"email\": \"yoosin@gmail.com\",\r\n    \"major\": \"Accounting\",\r\n    \"gpa\": 7.5\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Duplicate email returns 409\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Correct duplicate email message\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.detail).to.eql(\"Email already exists\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create student (Invalid Email)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}/api/students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"John Doe\",\r\n    \"email\": \"mail\",\r\n    \"major\": \"Accounting\",\r\n    \"gpa\": 8.5\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Invalid email returns 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Validation error exists\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.detail).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create student (GPA Negative)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}/api/students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Jaewo\",\r\n    \"email\": \"jaewo@gmail.com\",\r\n    \"major\": \"Computer Science\",\r\n    \"gpa\": -0.1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"GPA below 0 returns 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Validation error exists\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.detail).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create student (GPA Exceeded)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students",
+              "host": [
+                "{{baseUrl}}/api/students"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Invalid GPA Student\",\r\n    \"email\": \"gpa@example.com\",\r\n    \"major\": \"Computer Science\",\r\n    \"gpa\": 11\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"GPA above 10 returns 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Validation error exists\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.detail).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - PUT Test",
+      "item": [
+        {
+          "name": "Update valid student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/3",
+              "host": [
+                "{{baseUrl}}/api/students/3"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Elon Ma\",\r\n    \"email\": \"jack@example.com\",\r\n    \"major\": \"Information Systems\",\r\n    \"gpa\": 9.0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Student is updated\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "const json = pm.response.json();",
+                  "",
+                  "pm.test(\"Name was updated\", function () {",
+                  "    pm.expect(json.name).to.eql(\"Elon Ma\");",
+                  "});",
+                  "",
+                  "pm.test(\"Email was updated\", function () {",
+                  "    pm.expect(json.email).to.eql(",
+                  "        \"jack@example.com\"",
+                  "    );",
+                  "});",
+                  "",
+                  "pm.test(\"Major was updated\", function () {",
+                  "    pm.expect(json.major).to.eql(\"Information Systems\");",
+                  "});",
+                  "",
+                  "pm.test(\"GPA was updated\", function () {",
+                  "    pm.expect(json.gpa).to.eql(9.0);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Duplicate Email",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/3",
+              "host": [
+                "{{baseUrl}}/api/students/3"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"SIU\",\r\n    \"email\": \"vana@student.edu.vn\",\r\n    \"major\": \"Information Systems\",\r\n    \"gpa\": 9.0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Duplicate email on update returns 409\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "pm.test(\"Correct duplicate email message\", function () {",
+                  "    const json = pm.response.json();",
+                  "",
+                  "    pm.expect(json.detail).to.eql(\"Email already exists\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update with Empty JSON",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/3",
+              "host": [
+                "{{baseUrl}}/api/students/3"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"   \",\r\n    \"email\": \"   \",\r\n    \"major\": \"   \",\r\n    \"gpa\": 8.0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Empty JSON returns 422\", function () {",
+                  "    pm.response.to.have.status(422);",
+                  "});",
+                  "",
+                  "pm.test(\"Validation error exists\", function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.detail).to.exist;",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - DELETE Test",
+      "item": [
+        {
+          "name": "DELETE student",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/students/4",
+              "host": [
+                "{{baseUrl}}/api/students/4"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Student is deleted\", function () {",
+                  "    pm.response.to.have.status(204);",
+                  "});",
+                  "",
+                  "pm.test(\"Response body is empty\", function () {",
+                  "    pm.expect(pm.response.text()).to.eql(\"\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
