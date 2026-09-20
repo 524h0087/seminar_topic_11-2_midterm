@@ -1,8 +1,19 @@
 Student Management API - FastAPI version
 Topic 11-2: API Testing with Postman & Newman - 504070 SOA (Fall 2026)
 
+Automated Build phase:
+    powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
+
+Build script behavior:
+    1. Check Python and requirements.txt
+    2. Create or reuse .venv
+    3. Upgrade pip
+    4. Install dependencies from requirements.txt
+    5. Verify the FastAPI app can be imported
+    6. Run pip check
+
 Chay:
-    pip install fastapi uvicorn "pyjwt>=2.8" pydantic
+    pip install -r requirements.txt
     uvicorn main:app --reload --port 8080
 
 Endpoints:
@@ -15,5 +26,5 @@ Endpoints:
     GET    /actuator/health         -> health check (public, dùng cho CI/CD)
 
 Open your browser:
-    http://127.0.0.1:8000
-    http://127.0.0.1:8000/docs
+    http://127.0.0.1:8080
+    http://127.0.0.1:8080/docs
