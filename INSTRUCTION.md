@@ -82,6 +82,12 @@ scripts/stop-local.ps1
 Stops the locally deployed API process.
 
 ```text
+scripts/pipeline.ps1
+```
+
+Runs the full Build-Test-Deploy workflow and stops immediately if any phase fails.
+
+```text
 postman/collections/
 ```
 
@@ -174,6 +180,56 @@ powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1 -SkipDependencyInst
 ```
 
 Use this only when dependencies are already installed and you want a faster validation run.
+
+## Full Pipeline Phase
+
+Run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\pipeline.ps1
+```
+
+Or:
+
+```powershell
+npm run pipeline:local
+```
+
+What it does:
+
+1. Stops any existing local deployment, unless `-KeepExistingDeployment` is passed.
+2. Runs the Build phase.
+3. Runs the Test phase.
+4. Runs the Deploy phase only if Build and Test both pass.
+5. Stops immediately if any phase fails.
+
+This means:
+
+```text
+Build fails -> Test and Deploy do not run
+Test fails  -> Deploy does not run
+All pass    -> Deploy runs
+```
+
+Optional parameters:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\pipeline.ps1 -SkipNpmInstall
+```
+
+Skips `npm install` inside the Test phase.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\pipeline.ps1 -HostName 127.0.0.1 -Port 8080
+```
+
+Runs the pipeline on a custom host or port.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\pipeline.ps1 -KeepExistingDeployment
+```
+
+Keeps the current local deployment before the pipeline starts. Use this only if it is not using the same port as the test server.
 
 ## Test Phase
 
@@ -321,9 +377,7 @@ If no deployment is running, the script exits safely.
 Use this sequence when demonstrating the whole automation:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
-npm run test:api
-npm run deploy:local
+npm run pipeline:local
 ```
 
 Then open:
@@ -464,9 +518,12 @@ To recreate this automation from scratch in another similar FastAPI project:
 17. Verify the health endpoint.
 18. Create `scripts/stop-local.ps1`.
 19. In `stop-local.ps1`, read `.runtime/api.pid` and stop the process.
-20. Add npm shortcuts in `package.json`.
-21. Add `.venv`, `node_modules`, `.runtime`, and `reports` to `.gitignore`.
-22. Document the workflow in README or an instruction file.
+20. Create `scripts/pipeline.ps1`.
+21. In `pipeline.ps1`, run Build, Test, and Deploy in order.
+22. Make the pipeline stop immediately when a phase fails.
+23. Add npm shortcuts in `package.json`.
+24. Add `.venv`, `node_modules`, `.runtime`, and `reports` to `.gitignore`.
+25. Document the workflow in README or an instruction file.
 
 ## Troubleshooting
 
@@ -549,8 +606,6 @@ Stop:
 The project can now be built, tested, and deployed locally with:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
-npm run test:api
-npm run deploy:local
+npm run pipeline:local
 npm run stop:local
 ```
