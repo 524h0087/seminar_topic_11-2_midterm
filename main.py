@@ -14,15 +14,15 @@ from pydantic import BaseModel, EmailStr, Field, field_validator
 # --------------------------------------------------------------------------
 JWT_SECRET = "SOA-Topic11-2-Demo-Secret-Key-For-Postman-Newman-CI-CD-2026"
 JWT_ALGORITHM = "HS256"
-JWT_EXP = 45 # Min
+JWT_EXP = 45 # Minute
 
 DEMO_USERNAME = "admin"
 DEMO_PASSWORD = "admin123"
 
 app = FastAPI(
     title="Student Management API",
-    description="Demo REST API cho seminar Topic 11-2: API Testing with Postman & Newman",
-    version="1.0.0",
+    desc="Demo REST API cho seminar Topic 11-2: API Testing with Postman & Newman",
+    ver="1.0.0",
 )
 
 security = HTTPBearer()
@@ -31,10 +31,10 @@ security = HTTPBearer()
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     errors = exc.errors()
-    message = errors[0].get("msg", "Validation error") if errors else "Validation error"
+    msg = errors[0].get("msg", "Validation error") if errors else "Validation error"
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content={"detail": message},
+        content={"detail": msg},
     )
 
 # --------------------------------------------------------------------------
