@@ -4,7 +4,9 @@
   "private": true,
   "description": "Local Build-Test-Deploy automation for the FastAPI Student Management API seminar project.",
   "scripts": {
-    "test:api": "powershell -ExecutionPolicy Bypass -File ./scripts/test.ps1"
+    "test:api": "powershell -ExecutionPolicy Bypass -File ./scripts/test.ps1",
+    "deploy:local": "powershell -ExecutionPolicy Bypass -File ./scripts/deploy-local.ps1",
+    "stop:local": "powershell -ExecutionPolicy Bypass -File ./scripts/stop-local.ps1"
   },
   "devDependencies": {
     "newman": "^6.2.2",
