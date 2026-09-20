@@ -1,64 +1,208 @@
-Student Management API - FastAPI version
-Topic 11-2: API Testing with Postman & Newman - 504070 SOA (Fall 2026)
+# Student Management API
 
-Automated Build phase:
-    powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
+FastAPI seminar project for **Topic 11-2: API Testing with Postman & Newman**.
 
-Automated Test phase:
-    powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1
-    npm run test:api
+This repository contains a small Student Management REST API plus local automation for the full workflow:
 
-Automated Deploy phase:
-    powershell -ExecutionPolicy Bypass -File .\scripts\deploy-local.ps1
-    npm run deploy:local
+```text
+Code base -> Build -> Test -> Deploy
+Available -> Automated -> Automated with Newman -> Automated on Local Machine
+```
 
-Stop local deployment:
-    powershell -ExecutionPolicy Bypass -File .\scripts\stop-local.ps1
-    npm run stop:local
+## Features
 
-Build script behavior:
-    1. Check Python and requirements.txt
-    2. Create or reuse .venv
-    3. Upgrade pip
-    4. Install dependencies from requirements.txt
-    5. Verify the FastAPI app can be imported
-    6. Run pip check
+- FastAPI-based REST API.
+- JWT login with demo credentials.
+- Protected student CRUD endpoints.
+- Public health check endpoint for automation.
+- Postman request tests converted for Newman.
+- PowerShell scripts for local Build, Test, Deploy, and Stop phases.
 
-Test script behavior:
-    1. Run the Build phase
-    2. Install local Newman dependencies with npm
-    3. Generate Newman-compatible Postman JSON files
-    4. Start a temporary Uvicorn API server
-    5. Wait for /actuator/health
-    6. Run Newman tests
-    7. Save Newman JSON and JUnit reports under reports/newman
-    8. Stop the temporary API server
+## Requirements
 
-Deploy script behavior:
-    1. Run the Build phase
-    2. Start Uvicorn as a background local process
-    3. Save the process ID under .runtime/api.pid
-    4. Save the deployed URL under .runtime/api.url
-    5. Wait for /actuator/health
-    6. Keep the API running on the local machine
+Install these tools before running the project:
 
-Deploy logs:
-    .runtime/api.out.log
-    .runtime/api.err.log
+- Python 3.13 or another compatible Python 3 version.
+- Node.js and npm.
+- PowerShell.
 
-Chay:
-    pip install -r requirements.txt
-    uvicorn main:app --reload --port 8080
+Newman is installed locally through npm, so a global Newman installation is not required.
 
-Endpoints:
-    POST   /api/auth/login          -> đăng nhập, trả JWT token (admin / admin123)
-    GET    /api/students            -> lấy danh sách sinh viên      (cần Bearer token)
-    GET    /api/students/{id}       -> lấy 1 sinh viên              (cần Bearer token)
-    POST   /api/students            -> tạo sinh viên (201)          (cần Bearer token)
-    PUT    /api/students/{id}       -> cập nhật sinh viên           (cần Bearer token)
-    DELETE /api/students/{id}       -> xóa sinh viên (204)          (cần Bearer token)
-    GET    /actuator/health         -> health check (public, dùng cho CI/CD)
+## Quick Start
 
-Open your browser:
-    http://127.0.0.1:8080
-    http://127.0.0.1:8080/docs
+Install Node.js dependencies once:
+
+```powershell
+npm install
+```
+
+Build the Python environment:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
+```
+
+Run the Newman API test suite:
+
+```powershell
+npm run test:api
+```
+
+Deploy the API locally:
+
+```powershell
+npm run deploy:local
+```
+
+Open the local API documentation:
+
+```text
+http://127.0.0.1:8080/docs
+```
+
+Stop the local deployment when finished:
+
+```powershell
+npm run stop:local
+```
+
+## API Access
+
+Base URL:
+
+```text
+http://127.0.0.1:8080
+```
+
+Demo login credentials:
+
+```text
+Username: admin
+Password: admin123
+```
+
+## Endpoints
+
+| Method | Path | Description | Authentication |
+|---|---|---|---|
+| `POST` | `/api/auth/login` | Log in and receive a JWT token | Public |
+| `GET` | `/api/students` | Get all students | Bearer token required |
+| `GET` | `/api/students/{id}` | Get one student by ID | Bearer token required |
+| `POST` | `/api/students` | Create a student | Bearer token required |
+| `PUT` | `/api/students/{id}` | Update a student | Bearer token required |
+| `DELETE` | `/api/students/{id}` | Delete a student | Bearer token required |
+| `GET` | `/actuator/health` | Health check for automation | Public |
+
+## Automation Commands
+
+### Build
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
+```
+
+The Build phase:
+
+1. Checks Python and `requirements.txt`.
+2. Creates or reuses `.venv`.
+3. Upgrades `pip`.
+4. Installs dependencies from `requirements.txt`.
+5. Verifies that the FastAPI app can be imported.
+6. Runs `pip check`.
+
+### Test
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1
+```
+
+Or:
+
+```powershell
+npm run test:api
+```
+
+The Test phase:
+
+1. Runs the Build phase.
+2. Installs local Newman dependencies with npm.
+3. Generates Newman-compatible Postman JSON files.
+4. Starts a temporary Uvicorn API server.
+5. Waits for `/actuator/health`.
+6. Runs Newman tests.
+7. Saves Newman JSON and JUnit reports under `reports/newman`.
+8. Stops the temporary API server.
+
+### Deploy Locally
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\deploy-local.ps1
+```
+
+Or:
+
+```powershell
+npm run deploy:local
+```
+
+The Deploy phase:
+
+1. Runs the Build phase.
+2. Starts Uvicorn as a background local process.
+3. Saves the process ID under `.runtime/api.pid`.
+4. Saves the deployed URL under `.runtime/api.url`.
+5. Waits for `/actuator/health`.
+6. Keeps the API running on the local machine.
+
+### Stop Local Deployment
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\stop-local.ps1
+```
+
+Or:
+
+```powershell
+npm run stop:local
+```
+
+## Generated Files
+
+These files are generated by the automation:
+
+| Path | Purpose |
+|---|---|
+| `postman/newman/API Testing.postman_collection.json` | Newman-compatible Postman collection |
+| `postman/newman/Test Subject 1.postman_environment.json` | Newman-compatible Postman environment |
+| `reports/newman/newman-report.json` | Newman JSON report |
+| `reports/newman/newman-report.xml` | Newman JUnit report |
+| `.runtime/api.pid` | Local deployment process ID |
+| `.runtime/api.url` | Local deployment URL |
+| `.runtime/api.out.log` | Local deployment stdout log |
+| `.runtime/api.err.log` | Local deployment stderr log |
+
+`reports/` and `.runtime/` are ignored by Git.
+
+## Manual Run
+
+You can also run the API manually after installing Python dependencies:
+
+```powershell
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8080
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8080
+http://127.0.0.1:8080/docs
+```
+
+## More Instructions
+
+For a detailed explanation of how the Build-Test-Deploy automation works and how to rebuild it yourself, read:
+
+```text
+INSTRUCTION.md
+```
