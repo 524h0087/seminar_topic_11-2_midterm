@@ -4,6 +4,10 @@ Topic 11-2: API Testing with Postman & Newman - 504070 SOA (Fall 2026)
 Automated Build phase:
     powershell -ExecutionPolicy Bypass -File .\scripts\build.ps1
 
+Automated Test phase:
+    powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1
+    npm run test:api
+
 Build script behavior:
     1. Check Python and requirements.txt
     2. Create or reuse .venv
@@ -11,6 +15,16 @@ Build script behavior:
     4. Install dependencies from requirements.txt
     5. Verify the FastAPI app can be imported
     6. Run pip check
+
+Test script behavior:
+    1. Run the Build phase
+    2. Install local Newman dependencies with npm
+    3. Generate Newman-compatible Postman JSON files
+    4. Start a temporary Uvicorn API server
+    5. Wait for /actuator/health
+    6. Run Newman tests
+    7. Save Newman JSON and JUnit reports under reports/newman
+    8. Stop the temporary API server
 
 Chay:
     pip install -r requirements.txt
