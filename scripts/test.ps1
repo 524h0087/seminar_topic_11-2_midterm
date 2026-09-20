@@ -93,6 +93,10 @@ try {
         --reporter-json-export (Join-Path $ReportsDir "newman-report.json") `
         --reporter-junit-export (Join-Path $ReportsDir "newman-report.xml")
 
+    if ($LASTEXITCODE -ne 0) {
+        throw "Newman tests failed with exit code $LASTEXITCODE."
+    }
+
     Write-Host ""
     Write-Host "Test phase completed successfully."
     Write-Host "Reports: $ReportsDir"
