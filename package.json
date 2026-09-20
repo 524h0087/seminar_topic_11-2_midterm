@@ -1,0 +1,13 @@
+{
+  "name": "seminar-topic-11-2-midterm",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local Build-Test-Deploy automation for the FastAPI Student Management API seminar project.",
+  "scripts": {
+    "test:api": "powershell -ExecutionPolicy Bypass -File ./scripts/test.ps1"
+  },
+  "devDependencies": {
+    "newman": "^6.2.2",
+    "yaml": "^2.8.1"
+  }
+}
