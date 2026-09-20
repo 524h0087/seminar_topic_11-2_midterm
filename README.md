@@ -8,6 +8,14 @@ Automated Test phase:
     powershell -ExecutionPolicy Bypass -File .\scripts\test.ps1
     npm run test:api
 
+Automated Deploy phase:
+    powershell -ExecutionPolicy Bypass -File .\scripts\deploy-local.ps1
+    npm run deploy:local
+
+Stop local deployment:
+    powershell -ExecutionPolicy Bypass -File .\scripts\stop-local.ps1
+    npm run stop:local
+
 Build script behavior:
     1. Check Python and requirements.txt
     2. Create or reuse .venv
@@ -25,6 +33,18 @@ Test script behavior:
     6. Run Newman tests
     7. Save Newman JSON and JUnit reports under reports/newman
     8. Stop the temporary API server
+
+Deploy script behavior:
+    1. Run the Build phase
+    2. Start Uvicorn as a background local process
+    3. Save the process ID under .runtime/api.pid
+    4. Save the deployed URL under .runtime/api.url
+    5. Wait for /actuator/health
+    6. Keep the API running on the local machine
+
+Deploy logs:
+    .runtime/api.out.log
+    .runtime/api.err.log
 
 Chay:
     pip install -r requirements.txt
