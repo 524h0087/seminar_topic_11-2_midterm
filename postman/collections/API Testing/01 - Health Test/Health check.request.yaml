@@ -1,0 +1,22 @@
+$kind: http-request
+url: "{{baseUrl}}/actuator/health"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"API status is UP\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \    pm.expect(json.status).to.eql(\"UP\");\r
+
+      });"
+    language: text/javascript
+order: 1789786259168

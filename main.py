@@ -3,27 +3,39 @@ from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Request, status
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 # --------------------------------------------------------------------------
 # Config (demo only)
 # --------------------------------------------------------------------------
 JWT_SECRET = "SOA-Topic11-2-Demo-Secret-Key-For-Postman-Newman-CI-CD-2026"
 JWT_ALGORITHM = "HS256"
-JWT_EXP = 45 # Min
+JWT_EXP = 45 # Minute
 
 DEMO_USERNAME = "admin"
 DEMO_PASSWORD = "admin123"
 
 app = FastAPI(
     title="Student Management API",
-    description="Demo REST API cho seminar Topic 11-2: API Testing with Postman & Newman",
-    version="1.0.0",
+    desc="Demo REST API cho seminar Topic 11-2: API Testing with Postman & Newman",
+    ver="1.0.0",
 )
 
 security = HTTPBearer()
+
+# Return a clean 422 response instead of FastAPI's default validation details.
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    errors = exc.errors()
+    msg = errors[0].get("msg", "Validation error") if errors else "Validation error"
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": msg},
+    )
 
 # --------------------------------------------------------------------------
 # Models
@@ -45,6 +57,20 @@ class StudentIn(BaseModel):
     major: Optional[str] = None
     gpa: Optional[float] = Field(None, ge=0.0, le=10.0)
 
+    @field_validator("name", "email", "major", mode="before")
+    @classmethod
+    def reject_blank_strings(cls, value):
+        if value is None:
+            return value
+
+        if isinstance(value, str):
+            value = value.strip()
+            if not value:
+                raise ValueError("Field must not be blank")
+            return value
+
+        return value
+
 
 class Student(StudentIn):
     id: int
@@ -65,7 +91,7 @@ def seed_data():
         StudentIn(name="Le Van C", email="vanc@student.edu.vn", major="Information Systems", gpa=7.8),
     ]
     for s in seed:
-        students_db[next_id] = Student(id=next_id, **s.dict())
+        students_db[next_id] = Student(id=next_id, **s.model_dump())
         next_id += 1
 
 
@@ -131,7 +157,14 @@ def get_student(student_id: int, _: str = Depends(verify_token)):
 @app.post("/api/students", response_model=Student, status_code=status.HTTP_201_CREATED)
 def create_student(payload: StudentIn, _: str = Depends(verify_token)):
     global next_id
-    student = Student(id=next_id, **payload.dict())
+
+    if email_exists(payload.email):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Email already exists"
+        )
+
+    student = Student(id=next_id, **payload.model_dump())
     students_db[next_id] = student
     next_id += 1
     return student

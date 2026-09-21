@@ -1,0 +1,65 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students/3"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"Elon Ma\",\r
+
+    \    \"email\": \"jack@example.com\",\r
+
+    \    \"major\": \"Information Systems\",\r
+
+    \    \"gpa\": 9.0\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Student is updated\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Name was updated\", function () {\r
+
+      \    pm.expect(json.name).to.eql(\"Elon Ma\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Email was updated\", function () {\r
+
+      \    pm.expect(json.email).to.eql(\r
+
+      \        \"jack@example.com\"\r
+
+      \    );\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Major was updated\", function () {\r
+
+      \    pm.expect(json.major).to.eql(\"Information Systems\");\r
+
+      });\r
+
+      \r
+
+      pm.test(\"GPA was updated\", function () {\r
+
+      \    pm.expect(json.gpa).to.eql(9.0);\r
+
+      });"
+    language: text/javascript
+order: 1789787625577

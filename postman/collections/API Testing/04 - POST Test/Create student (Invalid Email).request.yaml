@@ -1,0 +1,37 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"John Doe\",\r
+
+    \    \"email\": \"mail\",\r
+
+    \    \"major\": \"Accounting\",\r
+
+    \    \"gpa\": 8.5\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Invalid email returns 422\", function () {\r
+
+      \    pm.response.to.have.status(422);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Validation error exists\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \r
+
+      \    pm.expect(json.detail).to.exist;\r
+
+      });"
+    language: text/javascript
+order: 1735450848247424

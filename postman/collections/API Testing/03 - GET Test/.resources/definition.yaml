@@ -1,0 +1,8 @@
+$kind: collection
+auth:
+  - id: faa4f9ad-2415-4930-ac52-1c88823e3fd5
+    type: bearer
+    name: Bearer Token
+    credentials:
+      token: "{{token}}"
+order: 4374764156092415
