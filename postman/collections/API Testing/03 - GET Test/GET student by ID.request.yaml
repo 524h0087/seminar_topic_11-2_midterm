@@ -1,0 +1,40 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students/2"
+method: GET
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code is 200\", function () {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r
+
+      \r
+
+      const json = pm.response.json();\r
+
+      \r
+
+      pm.test(\"Student has an ID\", function () {\r
+
+      \    pm.expect(json.id).to.exist;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Student has a name\", function () {\r
+
+      \    pm.expect(json.name).to.exist;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Student has an email\", function () {\r
+
+      \    pm.expect(json.email).to.exist;\r
+
+      });"
+    language: text/javascript
+order: 1391289528451946

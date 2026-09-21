@@ -1,0 +1,8 @@
+$kind: collection
+auth:
+  - id: 7307bfe7-2048-4524-8f6a-a300fce7fc7d
+    type: bearer
+    name: Bearer Token
+    credentials:
+      token: "{{token}}"
+order: 906330553450495

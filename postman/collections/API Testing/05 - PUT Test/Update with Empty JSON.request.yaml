@@ -1,0 +1,35 @@
+$kind: http-request
+url: "{{baseUrl}}/api/students/3"
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"   \",\r
+
+    \    \"email\": \"   \",\r
+
+    \    \"major\": \"   \",\r
+
+    \    \"gpa\": 8.0\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Empty JSON returns 422\", function () {\r
+
+      \    pm.response.to.have.status(422);\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Validation error exists\", function () {\r
+
+      \    const json = pm.response.json();\r
+
+      \    pm.expect(json.detail).to.exist;\r
+
+      });"
+    language: text/javascript
+order: 2531709483486975
