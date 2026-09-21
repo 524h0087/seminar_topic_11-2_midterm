@@ -1,0 +1,157 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Testing",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "{{baseUrl}}"
+    }
+  ],
+  "paths": {
+    "/api/students/3": {
+      "put": {
+        "summary": "Update valid student",
+        "responses": {},
+        "tags": [
+          "PUT Test"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "major": {
+                    "type": "string"
+                  },
+                  "gpa": {
+                    "type": "integer"
+                  }
+                }
+              },
+              "example": {
+                "name": "Elon Ma",
+                "email": "jack@example.com",
+                "major": "Information Systems",
+                "gpa": 9
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/students/4": {
+      "delete": {
+        "summary": "DELETE student",
+        "responses": {},
+        "tags": [
+          "DELETE Test"
+        ]
+      }
+    },
+    "/api/students": {
+      "post": {
+        "summary": "Create student",
+        "responses": {},
+        "tags": [
+          "POST Test"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "major": {
+                    "type": "string"
+                  },
+                  "gpa": {
+                    "type": "number"
+                  }
+                }
+              },
+              "example": {
+                "name": "Yoosin",
+                "email": "yoosin@gmail.com",
+                "major": "Journalist",
+                "gpa": 8.5
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "GET all students",
+        "responses": {},
+        "tags": [
+          "GET Test"
+        ]
+      }
+    },
+    "/actuator/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {},
+        "tags": [
+          "Health Test"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Invalid Test",
+        "responses": {},
+        "tags": [
+          "Authorization Test"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "username": "admin",
+                "password": "demin321"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/students/2": {
+      "get": {
+        "summary": "GET student by ID",
+        "responses": {},
+        "tags": [
+          "GET Test"
+        ]
+      }
+    }
+  }
+}
