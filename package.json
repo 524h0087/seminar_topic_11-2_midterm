@@ -4,6 +4,7 @@
   "private": true,
   "description": "Local Build-Test-Deploy automation for the FastAPI Student Management API seminar project.",
   "scripts": {
+    "build:local": "powershell -ExecutionPolicy Bypass -File ./scripts/build.ps1",
     "cicd:local": "powershell -ExecutionPolicy Bypass -File ./scripts/pipeline.ps1 -SkipNpmInstall",
     "verify:ngrok": "powershell -ExecutionPolicy Bypass -File ./scripts/verify-ngrok.ps1",
     "test:api": "powershell -ExecutionPolicy Bypass -File ./scripts/test.ps1 -SkipBuild",
