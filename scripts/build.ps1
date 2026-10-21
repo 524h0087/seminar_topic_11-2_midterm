@@ -1,25 +1,35 @@
 param(
-    [string]$PythonExe = "python",
-    [string]$VenvPath = ".venv",
-    [switch]$SkipDependencyInstall
+    [string]$PythonExe = "python", # Python interpreter used to create the virtual environment.
+    [string]$VenvPath = ".venv", # Virtual environment folder, relative to the project root.
+    [switch]$SkipDependencyInstall # Skips "pip install -r requirements.txt" when set.
 )
 
+# Treat every error as terminating so the build fails fast.
 $ErrorActionPreference = "Stop"
 
+# Prints a blank line followed by a "==> <message>" step header.
 function Write-Step {
     param([string]$Message)
     Write-Host ""
     Write-Host "==> $Message"
 }
 
+# Returns the given relative path joined onto the project root.
 function Resolve-FromProjectRoot {
     param([string]$Path)
     Join-Path $ProjectRoot $Path
 }
 
+# Project root (parent of the scripts folder).
 $ProjectRoot = Split-Path -Parent $PSScriptRoot
+
+# Absolute path to the dependency list.
 $RequirementsPath = Resolve-FromProjectRoot "requirements.txt"
+
+# Absolute path to the virtual environment folder.
 $VenvFullPath = Resolve-FromProjectRoot $VenvPath
+
+# Python executable inside the virtual environment, used for all later steps.
 $PythonInVenv = Join-Path $VenvFullPath "Scripts\python.exe"
 
 Set-Location $ProjectRoot
