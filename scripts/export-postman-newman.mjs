@@ -5,13 +5,20 @@ import YAML from "yaml";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+// seminar_topic_11-2_midterm
 const projectRoot = path.resolve(__dirname, "..");
+// seminar_topic_11-2_midterm/
 
-const collectionRoot = path.join(projectRoot, "postman", "collections", "API Testing");
+const collectionRoot = path.join(projectRoot, "postman", "collections", "API Testing"); 
+// seminar_topic_11-2_midterm/postman/collections/API Testing
 const environmentPath = path.join(projectRoot, "postman", "environments", "Test Subject 1.environment.yaml");
+// seminar_topic_11-2_midterm/postman/environments/Test Subject 1.environment.yaml
 const outputRoot = path.join(projectRoot, "postman", "newman");
+// seminar_topic_11-2_midterm/postman/newman
 const collectionOutputPath = path.join(outputRoot, "API Testing.postman_collection.json");
+// seminar_topic_11-2_midterm/postman/newman/API Testing.postman_collection.json
 const environmentOutputPath = path.join(outputRoot, "Test Subject 1.postman_environment.json");
+// seminar_topic_11-2_midterm/postman/newman/Test Subject 1.postman_environment.json
 
 const folders = [
   {
