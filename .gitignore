@@ -14,7 +14,7 @@ reports/
 .env
 .env.*
 
-BUILD-FROM-SCRATCH
-Kịch bản
-SCRIPT-LINE-BY-LINE
-tutorial
+BUILD-FROM-SCRATCH.md
+Kịch bản.docx
+SCRIPTS-LINE-BY-LINE.md
+tutorial.md
