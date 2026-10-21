@@ -15,16 +15,16 @@ function Write-Step {
 }
 
 # Project root (parent of the scripts folder).
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
 
 # Folder holding the local deployment's runtime state.
-$RuntimeDir = Join-Path $ProjectRoot ".runtime"
+$RuntimeDir = Join-Path $ProjectRoot ".runtime" # seminar_topic_11-2_midterm/.runtime
 
 # File storing the PID of the running API process (written by deploy-local.ps1).
-$PidPath = Join-Path $RuntimeDir "api.pid"
+$PidPath = Join-Path $RuntimeDir "api.pid" # seminar_topic_11-2_midterm/.runtime/api.pid
 
 # File storing the base URL of the running API (written by deploy-local.ps1).
-$UrlPath = Join-Path $RuntimeDir "api.url"
+$UrlPath = Join-Path $RuntimeDir "api.url" # seminar_topic_11-2_midterm/.runtime/api.url
 
 if (-not (Test-Path $PidPath)) {
     if (-not $Quiet) {

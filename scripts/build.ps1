@@ -21,16 +21,16 @@ function Resolve-FromProjectRoot {
 }
 
 # Project root (parent of the scripts folder).
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
 
 # Absolute path to the dependency list.
-$RequirementsPath = Resolve-FromProjectRoot "requirements.txt"
+$RequirementsPath = Resolve-FromProjectRoot "requirements.txt" # seminar_topic_11-2_midterm/requirements.txt
 
 # Absolute path to the virtual environment folder.
-$VenvFullPath = Resolve-FromProjectRoot $VenvPath
+$VenvFullPath = Resolve-FromProjectRoot $VenvPath # seminar_topic_11-2_midterm/.venv
 
 # Python executable inside the virtual environment, used for all later steps.
-$PythonInVenv = Join-Path $VenvFullPath "Scripts\python.exe"
+$PythonInVenv = Join-Path $VenvFullPath "Scripts\python.exe" # seminar_topic_11-2_midterm/.venv/Scripts/python.exe
 
 Set-Location $ProjectRoot
 

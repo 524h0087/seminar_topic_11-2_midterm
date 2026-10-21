@@ -5,10 +5,11 @@ import YAML from "yaml";
 
 // Absolute path of this script file (ES modules have no built-in __filename).
 const __filename = fileURLToPath(import.meta.url);
+// seminar_topic_11-2_midterm/scripts/export-postman-newman.mjs
 
 // Directory containing this script (ES modules have no built-in __dirname).
 const __dirname = path.dirname(__filename);
-// seminar_topic_11-2_midterm
+// seminar_topic_11-2_midterm/scripts
 
 // Project root, used as the base for all other paths.
 const projectRoot = path.resolve(__dirname, "..");

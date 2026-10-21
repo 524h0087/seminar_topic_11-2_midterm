@@ -66,31 +66,31 @@ function Get-RecordedProcess {
 }
 
 # Project root (parent of the scripts folder).
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
 
 # Python executable inside the virtual environment, used to run uvicorn.
-$PythonInVenv = Resolve-FromProjectRoot ".venv\Scripts\python.exe"
+$PythonInVenv = Resolve-FromProjectRoot ".venv\Scripts\python.exe" # seminar_topic_11-2_midterm/.venv/Scripts/python.exe
 
 # Folder holding runtime state (PID, URL, logs) for the local deployment.
-$RuntimeDir = Resolve-FromProjectRoot ".runtime"
+$RuntimeDir = Resolve-FromProjectRoot ".runtime" # seminar_topic_11-2_midterm/.runtime
 
 # File storing the PID of the running API process.
-$PidPath = Join-Path $RuntimeDir "api.pid"
+$PidPath = Join-Path $RuntimeDir "api.pid" # seminar_topic_11-2_midterm/.runtime/api.pid
 
 # File storing the base URL of the running API.
-$UrlPath = Join-Path $RuntimeDir "api.url"
+$UrlPath = Join-Path $RuntimeDir "api.url" # seminar_topic_11-2_midterm/.runtime/api.url
 
 # Log file for the API's standard output.
-$OutputLogPath = Join-Path $RuntimeDir "api.out.log"
+$OutputLogPath = Join-Path $RuntimeDir "api.out.log" # seminar_topic_11-2_midterm/.runtime/api.out.log
 
 # Log file for the API's standard error.
-$ErrorLogPath = Join-Path $RuntimeDir "api.err.log"
+$ErrorLogPath = Join-Path $RuntimeDir "api.err.log" # seminar_topic_11-2_midterm/.runtime/api.err.log
 
 # Base URL the API is served at.
-$BaseUrl = "http://${HostName}:$Port"
+$BaseUrl = "http://${HostName}:$Port" # http://127.0.0.1:8080
 
 # Health endpoint used to confirm the API is ready.
-$HealthUrl = "$BaseUrl/actuator/health"
+$HealthUrl = "$BaseUrl/actuator/health" # http://127.0.0.1:8080/actuator/health
 
 Set-Location $ProjectRoot
 

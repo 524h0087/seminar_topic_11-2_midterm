@@ -45,28 +45,28 @@ function Wait-ForHealth {
 }
 
 # Project root (parent of the scripts folder).
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
 
 # Python executable inside the virtual environment, used to run uvicorn.
-$PythonInVenv = Resolve-FromProjectRoot ".venv\Scripts\python.exe"
+$PythonInVenv = Resolve-FromProjectRoot ".venv\Scripts\python.exe" # seminar_topic_11-2_midterm/.venv/Scripts/python.exe
 
 # Folder holding runtime state and the test server logs.
-$RuntimeDir = Resolve-FromProjectRoot ".runtime"
+$RuntimeDir = Resolve-FromProjectRoot ".runtime" # seminar_topic_11-2_midterm/.runtime
 
 # Output folder for the Newman JSON and JUnit reports.
-$ReportsDir = Resolve-FromProjectRoot "reports\newman"
+$ReportsDir = Resolve-FromProjectRoot "reports\newman" # seminar_topic_11-2_midterm/reports/newman
 
 # Generated Postman collection run by Newman.
-$CollectionPath = Resolve-FromProjectRoot "postman\newman\API Testing.postman_collection.json"
+$CollectionPath = Resolve-FromProjectRoot "postman\newman\API Testing.postman_collection.json" # seminar_topic_11-2_midterm/postman/newman/API Testing.postman_collection.json
 
 # Generated Postman environment used by Newman.
-$EnvironmentPath = Resolve-FromProjectRoot "postman\newman\Test Subject 1.postman_environment.json"
+$EnvironmentPath = Resolve-FromProjectRoot "postman\newman\Test Subject 1.postman_environment.json" # seminar_topic_11-2_midterm/postman/newman/Test Subject 1.postman_environment.json
 
 # Base URL of the temporary test server.
-$BaseUrl = "http://${HostName}:$Port"
+$BaseUrl = "http://${HostName}:$Port" # http://127.0.0.1:8080
 
 # Health endpoint used to confirm the test server is ready.
-$HealthUrl = "$BaseUrl/actuator/health"
+$HealthUrl = "$BaseUrl/actuator/health" # http://127.0.0.1:8080/actuator/health
 
 # Temporary uvicorn process; stopped in the finally block.
 $ServerProcess = $null
@@ -93,10 +93,10 @@ try {
 
     New-Item -ItemType Directory -Force -Path $RuntimeDir, $ReportsDir | Out-Null
     # Log file for the test server's standard output.
-    $serverOutputLogPath = Join-Path $RuntimeDir "test-server.out.log"
+    $serverOutputLogPath = Join-Path $RuntimeDir "test-server.out.log" # seminar_topic_11-2_midterm/.runtime/test-server.out.log
 
     # Log file for the test server's standard error.
-    $serverErrorLogPath = Join-Path $RuntimeDir "test-server.err.log"
+    $serverErrorLogPath = Join-Path $RuntimeDir "test-server.err.log" # seminar_topic_11-2_midterm/.runtime/test-server.err.log
 
     Write-Step "Starting temporary API server at $BaseUrl"
     $ServerProcess = Start-Process `

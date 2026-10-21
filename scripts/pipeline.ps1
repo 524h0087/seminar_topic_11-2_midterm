@@ -112,19 +112,19 @@ function Write-PipelineSummary {
 }
 
 # Project root (parent of the scripts folder).
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
 
 # Folder holding runtime state and the pipeline summary.
-$RuntimeDir = Join-Path $ProjectRoot ".runtime"
+$RuntimeDir = Join-Path $ProjectRoot ".runtime" # seminar_topic_11-2_midterm/.runtime
 
 # File the pipeline summary is written to.
-$SummaryPath = Join-Path $RuntimeDir "pipeline-summary.txt"
+$SummaryPath = Join-Path $RuntimeDir "pipeline-summary.txt" # seminar_topic_11-2_midterm/.runtime/pipeline-summary.txt
 
 # Base URL of the local API.
-$LocalUrl = "http://${HostName}:$Port"
+$LocalUrl = "http://${HostName}:$Port" # http://127.0.0.1:8080
 
 # Health endpoint of the local API.
-$LocalHealthUrl = "$LocalUrl/actuator/health"
+$LocalHealthUrl = "$LocalUrl/actuator/health" # http://127.0.0.1:8080/actuator/health
 
 # ngrok URL with whitespace and trailing "/" removed ($null if not configured).
 $NgrokUrl = Format-BaseUrl $NgrokUrl

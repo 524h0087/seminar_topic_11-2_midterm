@@ -78,7 +78,7 @@ if (-not $NgrokUrl) {
 }
 
 # Full public health endpoint URL.
-$HealthUrl = Join-UrlPath -BaseUrl $NgrokUrl -Path $HealthPath
+$HealthUrl = Join-UrlPath -BaseUrl $NgrokUrl -Path $HealthPath # https://<subdomain>.ngrok-free.app/actuator/health
 
 Write-Step "Verifying ngrok public health endpoint"
 # Health response returned once the tunnel reports "UP".
