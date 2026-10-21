@@ -31,8 +31,8 @@ const environmentOutputPath = path.join(outputRoot, "Test Subject 1.postman_envi
 // Collection folders and their request files, in the order Newman should run them.
 const folders = [
   {
-    name: "01 - Health Test",
-    requests: ["Health check.request.yaml"]
+    name: "01 - Health Test", // must match the real folder
+    requests: ["Health check.request.yaml"] // must match the real file
   },
   {
     name: "02 - Authorization Test",
