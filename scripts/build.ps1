@@ -53,6 +53,7 @@ if (-not (Test-Path $PythonInVenv)) {
     Write-Step "Reusing existing virtual environment at $VenvFullPath"
 }
 
+# May remove ln.57 & 58 if you're at the lastest version of Python
 Write-Step "Upgrading pip"
 & $PythonInVenv -m pip install --upgrade pip
 

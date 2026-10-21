@@ -4,36 +4,29 @@ import { fileURLToPath } from "node:url";
 import YAML from "yaml";
 
 // Absolute path of this script file (ES modules have no built-in __filename).
-const __filename = fileURLToPath(import.meta.url);
-// seminar_topic_11-2_midterm/scripts/export-postman-newman.mjs
+const __filename = fileURLToPath(import.meta.url);  // seminar_topic_11-2_midterm/scripts/export-postman-newman.mjs
 
 // Directory containing this script (ES modules have no built-in __dirname).
-const __dirname = path.dirname(__filename);
-// seminar_topic_11-2_midterm/scripts
+const __dirname = path.dirname(__filename);  // seminar_topic_11-2_midterm/scripts
 
 // Project root, used as the base for all other paths.
 const projectRoot = path.resolve(__dirname, "..");
 // seminar_topic_11-2_midterm/
 
 // Source folder of the local Postman YAML collection.
-const collectionRoot = path.join(projectRoot, "postman", "collections", "API Testing");
-// seminar_topic_11-2_midterm/postman/collections/API Testing
+const collectionRoot = path.join(projectRoot, "postman", "collections", "API Testing");  // seminar_topic_11-2_midterm/postman/collections/API Testing
 
 // Source YAML file of the local Postman environment.
-const environmentPath = path.join(projectRoot, "postman", "environments", "Test Subject 1.environment.yaml");
-// seminar_topic_11-2_midterm/postman/environments/Test Subject 1.environment.yaml
+const environmentPath = path.join(projectRoot, "postman", "environments", "Test Subject 1.environment.yaml");  // seminar_topic_11-2_midterm/postman/environments/Test Subject 1.environment.yaml
 
 // Output folder for the generated Newman-compatible JSON files.
-const outputRoot = path.join(projectRoot, "postman", "newman");
-// seminar_topic_11-2_midterm/postman/newman
+const outputRoot = path.join(projectRoot, "postman", "newman");  // seminar_topic_11-2_midterm/postman/newman
 
 // Output path of the generated Postman v2.1 collection JSON.
-const collectionOutputPath = path.join(outputRoot, "API Testing.postman_collection.json");
-// seminar_topic_11-2_midterm/postman/newman/API Testing.postman_collection.json
+const collectionOutputPath = path.join(outputRoot, "API Testing.postman_collection.json");  // seminar_topic_11-2_midterm/postman/newman/API Testing.postman_collection.json
 
 // Output path of the generated Postman environment JSON.
-const environmentOutputPath = path.join(outputRoot, "Test Subject 1.postman_environment.json");
-// seminar_topic_11-2_midterm/postman/newman/Test Subject 1.postman_environment.json
+const environmentOutputPath = path.join(outputRoot, "Test Subject 1.postman_environment.json");  // seminar_topic_11-2_midterm/postman/newman/Test Subject 1.postman_environment.json
 
 // Collection folders and their request files, in the order Newman should run them.
 const folders = [
