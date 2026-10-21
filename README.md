@@ -1,4 +1,4 @@
-# Student Management API
+# Student Management API - Demonstration only
 
 ## 524H0086 - Trần Hồng Nhật Duy, 524H0087 - Nguyễn Đức Hiệu, 524H0081 - Phan Huy Bính
 
