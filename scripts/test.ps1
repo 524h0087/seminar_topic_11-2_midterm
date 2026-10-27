@@ -1,29 +1,34 @@
 param(
-    [string]$HostName = "127.0.0.1",
-    [int]$Port = 8080,
-    [switch]$SkipBuild,
-    [switch]$SkipNpmInstall
+    [string]$HostName = "127.0.0.1", # Host address the temporary test server binds to.
+    [int]$Port = 8080, # Port the temporary test server listens on.
+    [switch]$SkipBuild, # Skips running build.ps1 before testing.
+    [switch]$SkipNpmInstall # Skips "npm install" for the Newman dependencies.
 )
 
+# Treat every error as terminating so the test phase fails fast.
 $ErrorActionPreference = "Stop"
 
+# Prints a blank line followed by a "==> <message>" step header.
 function Write-Step {
     param([string]$Message)
     Write-Host ""
     Write-Host "==> $Message"
 }
 
+# Returns the given relative path joined onto the project root.
 function Resolve-FromProjectRoot {
     param([string]$Path)
     Join-Path $ProjectRoot $Path
 }
 
+# Polls the health endpoint until it reports status "UP"; throws after the timeout.
 function Wait-ForHealth {
     param(
-        [string]$HealthUrl,
-        [int]$TimeoutSeconds = 30
+        [string]$HealthUrl, # Health endpoint to poll.
+        [int]$TimeoutSeconds = 30 # Maximum time to wait before failing.
     )
 
+    # Point in time after which polling gives up.
     $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
     do {
         try {
@@ -39,14 +44,31 @@ function Wait-ForHealth {
     throw "API health check did not become ready at $HealthUrl within $TimeoutSeconds seconds."
 }
 
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
-$PythonInVenv = Resolve-FromProjectRoot ".venv\Scripts\python.exe"
-$RuntimeDir = Resolve-FromProjectRoot ".runtime"
-$ReportsDir = Resolve-FromProjectRoot "reports\newman"
-$CollectionPath = Resolve-FromProjectRoot "postman\newman\API Testing.postman_collection.json"
-$EnvironmentPath = Resolve-FromProjectRoot "postman\newman\Test Subject 1.postman_environment.json"
-$BaseUrl = "http://${HostName}:$Port"
-$HealthUrl = "$BaseUrl/actuator/health"
+# Project root (parent of the scripts folder).
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
+
+# Python executable inside the virtual environment, used to run uvicorn.
+$PythonInVenv = Resolve-FromProjectRoot ".venv\Scripts\python.exe" # seminar_topic_11-2_midterm/.venv/Scripts/python.exe
+
+# Folder holding runtime state and the test server logs.
+$RuntimeDir = Resolve-FromProjectRoot ".runtime" # seminar_topic_11-2_midterm/.runtime
+
+# Output folder for the Newman JSON and JUnit reports.
+$ReportsDir = Resolve-FromProjectRoot "reports\newman" # seminar_topic_11-2_midterm/reports/newman
+
+# Generated Postman collection run by Newman.
+$CollectionPath = Resolve-FromProjectRoot "postman\newman\API Testing.postman_collection.json" # seminar_topic_11-2_midterm/postman/newman/API Testing.postman_collection.json
+
+# Generated Postman environment used by Newman.
+$EnvironmentPath = Resolve-FromProjectRoot "postman\newman\Test Subject 1.postman_environment.json" # seminar_topic_11-2_midterm/postman/newman/Test Subject 1.postman_environment.json
+
+# Base URL of the temporary test server.
+$BaseUrl = "http://${HostName}:$Port" # http://127.0.0.1:8080
+
+# Health endpoint used to confirm the test server is ready.
+$HealthUrl = "$BaseUrl/actuator/health" # http://127.0.0.1:8080/actuator/health
+
+# Temporary uvicorn process; stopped in the finally block.
 $ServerProcess = $null
 
 Set-Location $ProjectRoot
@@ -70,8 +92,11 @@ try {
     node (Resolve-FromProjectRoot "scripts\export-postman-newman.mjs")
 
     New-Item -ItemType Directory -Force -Path $RuntimeDir, $ReportsDir | Out-Null
-    $serverOutputLogPath = Join-Path $RuntimeDir "test-server.out.log"
-    $serverErrorLogPath = Join-Path $RuntimeDir "test-server.err.log"
+    # Log file for the test server's standard output.
+    $serverOutputLogPath = Join-Path $RuntimeDir "test-server.out.log" # seminar_topic_11-2_midterm/.runtime/test-server.out.log
+
+    # Log file for the test server's standard error.
+    $serverErrorLogPath = Join-Path $RuntimeDir "test-server.err.log" # seminar_topic_11-2_midterm/.runtime/test-server.err.log
 
     Write-Step "Starting temporary API server at $BaseUrl"
     $ServerProcess = Start-Process `

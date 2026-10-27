@@ -9,5 +9,7 @@ node_modules/
 .runtime/
 reports/
 
+.cicd/ngrok.env
+
 .env
 .env.*

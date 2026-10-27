@@ -1,26 +1,36 @@
 param(
-    [string]$PythonExe = "python",
-    [string]$VenvPath = ".venv",
-    [switch]$SkipDependencyInstall
+    [string]$PythonExe = "python", # Python interpreter used to create the virtual environment.
+    [string]$VenvPath = ".venv", # Virtual environment folder, relative to the project root.
+    [switch]$SkipDependencyInstall # Skips "pip install -r requirements.txt" when set.
 )
 
+# Treat every error as terminating so the build fails fast.
 $ErrorActionPreference = "Stop"
 
+# Prints a blank line followed by a "==> <message>" step header.
 function Write-Step {
     param([string]$Message)
     Write-Host ""
     Write-Host "==> $Message"
 }
 
+# Returns the given relative path joined onto the project root.
 function Resolve-FromProjectRoot {
     param([string]$Path)
     Join-Path $ProjectRoot $Path
 }
 
-$ProjectRoot = Split-Path -Parent $PSScriptRoot
-$RequirementsPath = Resolve-FromProjectRoot "requirements.txt"
-$VenvFullPath = Resolve-FromProjectRoot $VenvPath
-$PythonInVenv = Join-Path $VenvFullPath "Scripts\python.exe"
+# Project root (parent of the scripts folder).
+$ProjectRoot = Split-Path -Parent $PSScriptRoot # seminar_topic_11-2_midterm/
+
+# Absolute path to the dependency list.
+$RequirementsPath = Resolve-FromProjectRoot "requirements.txt" # seminar_topic_11-2_midterm/requirements.txt
+
+# Absolute path to the virtual environment folder.
+$VenvFullPath = Resolve-FromProjectRoot $VenvPath # seminar_topic_11-2_midterm/.venv
+
+# Python executable inside the virtual environment, used for all later steps.
+$PythonInVenv = Join-Path $VenvFullPath "Scripts\python.exe" # seminar_topic_11-2_midterm/.venv/Scripts/python.exe
 
 Set-Location $ProjectRoot
 
@@ -43,6 +53,7 @@ if (-not (Test-Path $PythonInVenv)) {
     Write-Step "Reusing existing virtual environment at $VenvFullPath"
 }
 
+# May remove ln.57 & 58 if you're at the lastest version of Python
 Write-Step "Upgrading pip"
 & $PythonInVenv -m pip install --upgrade pip
 
